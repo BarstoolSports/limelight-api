@@ -1,0 +1,36 @@
+{
+  "name": "limelight-api",
+  "description": "Basic Limelight REST API wrapper",
+  "version": "0.1.0",
+  "author": {
+    "name": "Echo",
+    "url": "http://aboutecho.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/EchoAppsTeam/limelight-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EchoAppsTeam/limelight-api/issues"
+  },
+  "license": "Apache-2.0",
+  "main": "api",
+  "engines": {
+    "node": ">=0.8"
+  },
+  "dependencies": {
+    "q": "~1.0.1",
+    "request": "~2.34.0",
+    "qs": "~0.6.6"
+  },
+  "keywords": [
+    "Limelight",
+    "REST",
+    "API",
+    "gruntplugin"
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-jshint": "~0.10.0"
+  }
+}
