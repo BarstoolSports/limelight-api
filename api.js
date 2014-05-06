@@ -63,13 +63,13 @@ API.prototype.request = function(params) {
 			defer.reject(error);
 		} else if (response.statusCode < 200 || response.statusCode >= 300) {
 			body = body || response.body;
-			if (params.format === "json") {
+			if (this.format === "json") {
 				body = JSON.parse(body);
 			}
 			this._log("error", body);
 			defer.reject(body);
 		} else {
-			if (params.format === "json") {
+			if (this.format === "json") {
 				body = JSON.parse(body);
 				this._log("debug", "Response: " + JSON.stringify(body, null, 4));
 			} else {
