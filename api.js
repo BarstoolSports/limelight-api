@@ -28,6 +28,7 @@ var API = function(config) {
 	this.apiKey = config.apiKey;
 	this.format = config.format || "json";
 	this.debug = config.debug;
+	this.dryRun = config.dryRun;
 	this.apiBase = (config.protocol || "http") + "://" + config.host + "/" + config.name + "/v" + config.version + "/";
 };
 
@@ -57,6 +58,10 @@ API.prototype.request = function(params) {
 	}
 	data.headers["X-LLNW-Security-Token"] = generateHMAC(url, timestamp, this.apiKey, data);
 	var defer = Q.defer();
+	if (this.dryRun) {
+		defer.resolve(data);
+		return defer.promise;
+	}
 	var req = request(data, (function(error, response, body) {
 		if (error) {
 			this._log("error", error);
