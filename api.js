@@ -5,6 +5,19 @@ var request = require("request");
 var qs = require("qs");
 var crypto = require("crypto");
 
+function generateHMAC(url, timestamp, apiKey, request) {
+	var data = request.method + url;
+	if (request.qs) {
+		data += qs.stringify(request.qs);
+	}
+	data += timestamp;
+	if (request.body) {
+		data += request.body;
+	}
+	var key = new Buffer(apiKey, "hex");
+	return crypto.createHmac("sha256", key).update(data).digest("hex");
+}
+
 var API = function(config) {
 	this.logger = config.logger || {};
 	this.logger.error = this.logger.error || function(data) {
@@ -43,7 +56,7 @@ API.prototype.request = function(params) {
 			"X-LLNW-Security-Principal": this.user,
 			"X-LLNW-Security-Timestamp": timestamp
 		}
-	}
+	};
 	if (this.format === "json") {
 		data.headers["Content-Type"] = "application/json";
 		data.headers["Accept"] = "application/json";
@@ -62,7 +75,7 @@ API.prototype.request = function(params) {
 		defer.resolve(data);
 		return defer.promise;
 	}
-	var req = request(data, (function(error, response, body) {
+	var req = request(data, function(error, response, body) {
 		if (error) {
 			this._log("error", error);
 			defer.reject(error);
@@ -82,7 +95,7 @@ API.prototype.request = function(params) {
 			}
 			defer.resolve(body);
 		}
-	}).bind(this));
+	}.bind(this));
 	this._log("debug", "Request headers: " + JSON.stringify(req.headers, null, 4));
 	return defer.promise;
 };
@@ -93,19 +106,6 @@ API.prototype._log = function(type, message) {
 	} else if (type === "debug" && this.debug) {
 		this.logger.log(message);
 	}
-};
-
-function generateHMAC(url, timestamp, apiKey, request) {
-	var data = request.method + url;
-	if (request.qs) {
-		data += qs.stringify(request.qs);
-	}
-	data += timestamp;
-	if (request.body) {
-		data += request.body;
-	}
-	var key = new Buffer(apiKey, "hex");
-	return crypto.createHmac("sha256", key).update(data).digest("hex");
 };
 
 module.exports = API;
